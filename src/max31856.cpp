@@ -97,8 +97,13 @@ int max31856::readColdJunction(float *result)
     int ret = read(MAX31856_CJTH_REG, &HB);
     ret = read(MAX31856_CJTL_REG, &LB);
 
-    uint16_t i = (HB << 8) | (LB);
-    *result = (i >> 2)/64.f;
+    int16_t i = (HB << 8) | (LB);
+
+    i >>= 2;
+    if(HB & 0x80){
+        i -= 0x800;
+    }
+    *result = i/64.f;
 
     return 0;
 }
